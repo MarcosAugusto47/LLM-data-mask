@@ -1,17 +1,18 @@
-import requests
-import uuid
 import json
+import uuid
+
+import requests
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL = "mistral"
 
+
 def call_ollama(prompt: str) -> str:
-    response = requests.post(OLLAMA_URL, json={
-        "model": MODEL,
-        "prompt": prompt,
-        "stream": False
-    })
+    response = requests.post(
+        OLLAMA_URL, json={"model": MODEL, "prompt": prompt, "stream": False}
+    )
     return response.json()["response"].strip()
+
 
 def mask_pii(text: str):
     prompt = (
@@ -61,6 +62,7 @@ def main():
     print("\n✅ Masked Text:\n", masked_text)
     print(f"\n📁 PII mapping saved to: {map_file}")
     print(f"\n🔍 Restored Text:\n{restored}")
+
 
 if __name__ == "__main__":
     main()
