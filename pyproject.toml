@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm_data_mask"
+version = "0.1.0"
+description = "Utility to mask PII in text"
+readme = "README.md"
+requires-python = ">=3.12.7"
+dependencies = [
+    "outlines>=0.2.1",
+    "pydantic>=2.10.3",
+]
+
+[project.urls]
+Repository = "https://github.com/MarcosAugusto47/LLM-data-mask"
