@@ -5,13 +5,12 @@ from .helpers import (
     fix_comma_spacing_regex,
     mask_pii,
     remove_extra_spaces_regex,
-    unmask_pii,
 )
 
 
 class DriverDetails(BaseModel):
-    name: str = Field(pattern=r"([A-Z]+ ?)+")
-    RG: str = Field(pattern=r"[0-9-]*")  # Added hyphen to allow RG with hyphens
+    name: str = Field(pattern=r"([A-Z][a-z]+ ?)+")
+    RG: str = Field(pattern=r"[0-9.-]*")  # Added hyphen to allow RG with hyphens
     CPF: str = Field(
         pattern=r"[0-9.-]+"
     )  # Added hyphen to allow CPF with dots and hyphens
