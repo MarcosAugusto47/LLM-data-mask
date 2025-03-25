@@ -14,4 +14,4 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/MarcosAugusto47/LLM-data-mask"
+Repository = "https://github.com/MarcosAugusto47/LLM-data-mask.git"
