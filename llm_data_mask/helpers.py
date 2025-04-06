@@ -28,12 +28,18 @@ def mask_pii(text, pii_dict, mask_format="[{pii_type}]"):
     
     # Sort by length (longest first)
     all_pii_items.sort(key=lambda x: len(x[0]), reverse=True)
-    
     # Replace each PII item with its mask
+
     for pii_item, pii_type in all_pii_items:
+        
+        mask = mask_format.format(pii_type=pii_type)
+        
         if pii_item in masked_text:
-            mask = mask_format.format(pii_type=pii_type)
             masked_text = masked_text.replace(pii_item, mask)
+        else:
+            print(f"'{pii_item}' not found in text.")        
+            # Apply additional masking for specific patterns
+            masked_text = replace_if_matches_ends(masked_text, pii_item, mask)
     
     return masked_text
 
@@ -122,6 +128,56 @@ def remove_extra_spaces_regex(input_string):
     return re.sub(r'\s+', ' ', input_string)
 
 
+def replace_if_matches_ends(original_string, comparison_string, replacement, end_length=3):
+    """
+    Replace all substrings in the original_string if they start with the first part
+    and end with the last part of the comparison_string.
+    
+    Args:
+        original_string: The string to be modified
+        comparison_string: The string whose ends we're checking against
+        replacement: What to replace matching substrings with
+        end_length: Length of the prefix and suffix to match (default=3)
+    
+    Returns:
+        Modified original_string with all matches replaced
+    """
+    if not comparison_string or len(comparison_string) < end_length * 2:
+        return original_string
+    
+    # Get prefix and suffix of the comparison string
+    prefix = comparison_string[:end_length]
+    suffix = comparison_string[-end_length:]
+    
+    result = ""
+    i = 0
+    
+    while i <= len(original_string) - end_length:
+        # Check if current position matches the prefix
+        if original_string[i:i+end_length] == prefix:
+            # Search for the nearest suffix after this position
+            for j in range(i + end_length, len(original_string) - end_length + 1):
+                if original_string[j:j+end_length] == suffix:
+                    # Replace the substring from i to j+end_length
+                    result += replacement
+                    i = j + end_length  # Move past the replaced substring
+                    break
+            else:
+                # No matching suffix found, keep the original character
+                result += original_string[i]
+                i += 1
+        else:
+            # No prefix match, keep the original character
+            result += original_string[i]
+            i += 1
+        
+    
+    # Add any remaining characters
+    result += original_string[i:]
+    
+    return result
+
+
 # Example usage:
 if __name__ == "__main__":
     # Sample text with PII
@@ -172,3 +228,4 @@ if __name__ == "__main__":
     custom_unmasked_text = unmask_pii(custom_masked_text, pii_dictionary, mask_format="<REDACTED:{pii_type}>")
     print("\nOriginal text restored from custom masked format:")
     print(custom_unmasked_text)
+
