@@ -1,7 +1,7 @@
 
 import json
 import tqdm
-from llm_data_mask import process_driver_text, mask_pii, unmask_pii
+from llm_data_mask import process_driver_text, mask_pii
 
 
 def main():
@@ -9,7 +9,7 @@ def main():
     with open('data.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     
-    data = data[:5]
+    data = data[:10]
 
     # Process each sample
     results = []
@@ -17,29 +17,15 @@ def main():
         if isinstance(item, dict) and 'text' in item:
             mapping, masked_text, processed_text = process_driver_text(item['text'])
 
-            # print("Mapping")
-            # print(mapping)
-            # print("\n")
-
-            # # Mask PII information
-            # print("Masking PII information")
-            # masked_text = mask_pii(driver_details, mapping)
-
-            # print(masked_text)
-            # print("\n")
-
-            # # Unmask PII information
-            # print("Unmasking PII information")
-            # unmasked_text = unmask_pii(masked_text, mapping)
-            # print(unmasked_text)
-            print(item['text'])
             print(mapping)
+            print(masked_text)
+            print("-"*50)
 
-            masked_text = mask_pii(item['text'], mapping)
 
             if masked_text:
                 results.append({
-                    'original': item,
+                    'original': item['text'],
+                    'mapping': mapping,
                     'masked_text': masked_text
                 })
     
