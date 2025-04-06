@@ -128,7 +128,7 @@ def remove_extra_spaces_regex(input_string):
     return re.sub(r'\s+', ' ', input_string)
 
 
-def replace_if_matches_ends(original_string, comparison_string, replacement, end_length=3):
+def replace_if_matches_ends(original_string, comparison_string, replacement, prefix_length=2, suffix_length=3):
     """
     Replace all substrings in the original_string if they start with the first part
     and end with the last part of the comparison_string.
@@ -137,30 +137,31 @@ def replace_if_matches_ends(original_string, comparison_string, replacement, end
         original_string: The string to be modified
         comparison_string: The string whose ends we're checking against
         replacement: What to replace matching substrings with
-        end_length: Length of the prefix and suffix to match (default=3)
+        prefix_length: Length of the prefix to match (default=3)
+        suffix_length: Length of the suffix to match (default=3)
     
     Returns:
         Modified original_string with all matches replaced
     """
-    if not comparison_string or len(comparison_string) < end_length * 2:
+    if not comparison_string or len(comparison_string) < prefix_length + suffix_length:
         return original_string
     
     # Get prefix and suffix of the comparison string
-    prefix = comparison_string[:end_length]
-    suffix = comparison_string[-end_length:]
+    prefix = comparison_string[:prefix_length]
+    suffix = comparison_string[-suffix_length:]
     
     result = ""
     i = 0
     
-    while i <= len(original_string) - end_length:
+    while i <= len(original_string) - prefix_length:
         # Check if current position matches the prefix
-        if original_string[i:i+end_length] == prefix:
+        if original_string[i:i+prefix_length] == prefix:
             # Search for the nearest suffix after this position
-            for j in range(i + end_length, len(original_string) - end_length + 1):
-                if original_string[j:j+end_length] == suffix:
-                    # Replace the substring from i to j+end_length
+            for j in range(i + prefix_length, len(original_string) - suffix_length + 1):
+                if original_string[j:j+suffix_length] == suffix:
+                    # Replace the substring from i to j+suffix_length
                     result += replacement
-                    i = j + end_length  # Move past the replaced substring
+                    i = j + suffix_length  # Move past the replaced substring
                     break
             else:
                 # No matching suffix found, keep the original character
@@ -170,7 +171,6 @@ def replace_if_matches_ends(original_string, comparison_string, replacement, end
             # No prefix match, keep the original character
             result += original_string[i]
             i += 1
-        
     
     # Add any remaining characters
     result += original_string[i:]

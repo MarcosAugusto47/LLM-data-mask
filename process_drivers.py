@@ -9,13 +9,13 @@ def main():
     with open('data.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     
-    data = data[:10]
+    data = data[:20]
 
     # Process each sample
     results = []
     for item in tqdm.tqdm(data, desc="Processing samples"):
         if isinstance(item, dict) and 'text' in item:
-            mapping, masked_text, processed_text = process_driver_text(item['text'])
+            mapping, masked_text, _ = process_driver_text(item['text'])
 
             print(mapping)
             print(masked_text)
